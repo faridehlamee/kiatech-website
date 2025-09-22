@@ -38,12 +38,12 @@ const Footer = () => {
           <h3>Contact Info</h3>
           <p>Email: info@kiatechsoftware.com</p>
           <p>Phone: (555) 123-4567</p>
-          <p>Address: 123 Tech Street, Digital City, DC 12345</p>
+          <p>Address: 1234 Tech Street, Digital City, DC 12345</p>
         </div>
       </div>
       
       <div className="footer-bottom">
-        <p>&copy; 2024 Kiatech Software Inc. All rights reserved.</p>
+        <p>&copy; 2025 Kiatech Software Inc. All rights reserved.</p>
       </div>
     </footer>
   );
