@@ -147,6 +147,9 @@ const Contact = () => {
             <li>Money-Back Guarantee</li>
             <li>Free Consultation</li>
           </ul>
+          <div className="why-choose-cta">
+            <Link to="/contact" className="btn btn-primary">Get FREE Consultation</Link>
+          </div>
         </div>
       </section>
 

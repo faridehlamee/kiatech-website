@@ -316,6 +316,11 @@
   color: white;
 }
 
+.why-choose-cta {
+  text-align: center;
+  margin-top: 3rem;
+}
+
 /* Testimonial Section */
 .testimonial {
   background: white;
