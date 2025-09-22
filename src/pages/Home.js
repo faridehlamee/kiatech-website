@@ -229,9 +229,9 @@ const Home = () => {
           <div className="portfolio-grid">
             <article className="portfolio-item">
               <div className="portfolio-image">
-                <img src="https://via.placeholder.com/400x300?text=I+Care+Beauty+Clinic" alt="I Care Beauty Clinic - Professional beauty clinic website with modern design and booking system" />
+                <img src="/img/portfolio-3.jpg" alt="I Care Beauty Clinic - Professional beauty clinic website with modern design and booking system" />
                 <div className="portfolio-overlay">
-                  <button className="portfolio-btn" aria-label="View I Care Beauty Clinic project">View Project</button>
+                  <a href="https://icarebeautyclinic.ca" target="_blank" rel="noopener noreferrer" className="portfolio-btn" aria-label="View I Care Beauty Clinic project">View Project</a>
                 </div>
               </div>
               <div className="portfolio-content">
@@ -243,28 +243,28 @@ const Home = () => {
             
             <article className="portfolio-item">
               <div className="portfolio-image">
-                <img src="https://via.placeholder.com/400x300?text=Royal+Canyon" alt="Royal Canyon - Elegant business website with responsive design and SEO optimization" />
+                <img src="/img/portfolio-2-better.png" alt="Royal Canyon - Home inspection services in British Columbia with professional consulting and property development" />
                 <div className="portfolio-overlay">
-                  <button className="portfolio-btn" aria-label="View Royal Canyon project">View Project</button>
+                  <a href="https://royalcanyon.ca/" target="_blank" rel="noopener noreferrer" className="portfolio-btn" aria-label="View Royal Canyon project">View Project</a>
                 </div>
               </div>
               <div className="portfolio-content">
                 <h3>Royal Canyon</h3>
-                <p>Elegant business website with responsive design and SEO optimization</p>
+                <p>Home inspection services in British Columbia with professional consulting and property development</p>
                 <span className="portfolio-tag">Web Design</span>
               </div>
             </article>
             
             <article className="portfolio-item">
               <div className="portfolio-image">
-                <img src="https://via.placeholder.com/400x300?text=Dara+Insured+Financial+Services" alt="Dara Insured Financial Services - Financial services website with secure client portal and document management" />
+                <img src="/img/portfolio-1.jpg" alt="Dara Insured Financial Services - Personal financial planning and insurance services with expert guidance" />
                 <div className="portfolio-overlay">
-                  <button className="portfolio-btn" aria-label="View Dara Insured Financial Services project">View Project</button>
+                  <a href="https://darainsuredfinancial.ca/" target="_blank" rel="noopener noreferrer" className="portfolio-btn" aria-label="View Dara Insured Financial Services project">View Project</a>
                 </div>
               </div>
               <div className="portfolio-content">
                 <h3>Dara Insured Financial Services</h3>
-                <p>Financial services website with secure client portal and document management</p>
+                <p>Personal financial planning and insurance services with expert guidance</p>
                 <span className="portfolio-tag">Custom Development</span>
               </div>
             </article>

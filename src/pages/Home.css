@@ -359,6 +359,31 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  opacity: 0;
+  animation: fadeInLeft 0.6s ease-out forwards;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Staggered entrance animations */
+.team-feature:nth-child(1) { animation-delay: 0.1s; }
+.team-feature:nth-child(2) { animation-delay: 0.2s; }
+.team-feature:nth-child(3) { animation-delay: 0.3s; }
+.team-feature:nth-child(4) { animation-delay: 0.4s; }
+.team-feature:nth-child(5) { animation-delay: 0.5s; }
+.team-feature:nth-child(6) { animation-delay: 0.6s; }
+.team-feature:nth-child(7) { animation-delay: 0.7s; }
+.team-feature:nth-child(8) { animation-delay: 0.8s; }
+
+/* Simple fade-in from left animation */
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .team-feature::before {
@@ -404,6 +429,7 @@
   font-size: 1rem;
   position: relative;
   z-index: 2;
+  margin: 0;
   transition: color 0.3s ease;
 }
 

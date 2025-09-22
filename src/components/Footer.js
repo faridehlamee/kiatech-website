@@ -37,8 +37,8 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Contact Info</h3>
           <p>Email: info@kiatechsoftware.com</p>
-          <p>Phone: (555) 123-4567</p>
-          <p>Address: 1234 Tech Street, Digital City, DC 12345</p>
+          <p>Phone: (604) 781-4912</p>
+          <p>Address: Coquitlam, BC, Canada</p>
         </div>
       </div>
       
