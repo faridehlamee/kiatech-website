@@ -80,7 +80,7 @@ const Services = () => {
                 <span>Custom Solutions</span>
                 <span>24/7 Support</span>
               </div>
-              <button className="service-btn" aria-label="Learn more about custom websites">Learn More</button>
+              <Link to="/contact" className="service-btn" aria-label="Learn more about custom websites">Learn More</Link>
             </article>
             
             <article className="service-card">
@@ -90,7 +90,7 @@ const Services = () => {
                 <span>Custom Solutions</span>
                 <span>24/7 Support</span>
               </div>
-              <button className="service-btn" aria-label="Learn more about custom web applications">Learn More</button>
+              <Link to="/contact" className="service-btn" aria-label="Learn more about custom web applications">Learn More</Link>
             </article>
             
             <article className="service-card">
@@ -100,7 +100,7 @@ const Services = () => {
                 <span>Custom Solutions</span>
                 <span>24/7 Support</span>
               </div>
-              <button className="service-btn" aria-label="Learn more about e-commerce stores">Learn More</button>
+              <Link to="/contact" className="service-btn" aria-label="Learn more about e-commerce stores">Learn More</Link>
             </article>
             
             <article className="service-card">
@@ -110,7 +110,7 @@ const Services = () => {
                 <span>Custom Solutions</span>
                 <span>24/7 Support</span>
               </div>
-              <button className="service-btn" aria-label="Learn more about brand design and graphics">Learn More</button>
+              <Link to="/contact" className="service-btn" aria-label="Learn more about brand design and graphics">Learn More</Link>
             </article>
             
             <article className="service-card">
@@ -120,7 +120,7 @@ const Services = () => {
                 <span>Custom Solutions</span>
                 <span>24/7 Support</span>
               </div>
-              <button className="service-btn" aria-label="Learn more about reporting and analytics">Learn More</button>
+              <Link to="/contact" className="service-btn" aria-label="Learn more about reporting and analytics">Learn More</Link>
             </article>
             
             <article className="service-card">
@@ -130,7 +130,7 @@ const Services = () => {
                 <span>Custom Solutions</span>
                 <span>24/7 Support</span>
               </div>
-              <button className="service-btn" aria-label="Learn more about Google Ads services">Learn More</button>
+              <Link to="/contact" className="service-btn" aria-label="Learn more about Google Ads services">Learn More</Link>
             </article>
             
             <article className="service-card">
@@ -140,7 +140,7 @@ const Services = () => {
                 <span>Custom Solutions</span>
                 <span>24/7 Support</span>
               </div>
-              <button className="service-btn" aria-label="Learn more about backup and restore services">Learn More</button>
+              <Link to="/contact" className="service-btn" aria-label="Learn more about backup and restore services">Learn More</Link>
             </article>
           </div>
         </div>

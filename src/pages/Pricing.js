@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Pricing.css';
 
 const Pricing = () => {
@@ -159,7 +160,7 @@ const Pricing = () => {
                 <h3>{service.name}</h3>
                 <div className="service-price">{service.price}</div>
                 <p>{service.description}</p>
-                <a href="/contact" className="service-button">Learn More</a>
+                <Link to="/contact" className="service-button">Learn More</Link>
               </div>
             ))}
           </div>
