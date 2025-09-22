@@ -1,0 +1,96 @@
+/* Offline Notice Styles */
+.offline-notice {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+  z-index: 1001;
+  animation: slideDown 0.3s ease-out;
+  max-width: 350px;
+  width: 90%;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.offline-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  gap: 10px;
+}
+
+.offline-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.offline-text {
+  flex: 1;
+}
+
+.offline-text h4 {
+  margin: 0 0 3px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.offline-text p {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.offline-dismiss {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.offline-dismiss:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .offline-notice {
+    top: 10px;
+    width: 95%;
+  }
+  
+  .offline-content {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  
+  .offline-text h4 {
+    font-size: 0.85rem;
+  }
+  
+  .offline-text p {
+    font-size: 0.75rem;
+  }
+}
