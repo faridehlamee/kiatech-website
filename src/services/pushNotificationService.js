@@ -32,12 +32,13 @@ class PushNotificationService {
     }
 
     try {
+      // Get VAPID public key from server
+      const publicKey = await this.getVapidPublicKey();
+      
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(
-          'BEl62iUYgUivxIkv69yViEuiBIa40HIqO8Q4t9nX3M7oB7F2W1V4N8Q9S6A3R5T2Y7U1I0P4O6E8R9T5Y3U7I2O4P6A8S1D3F5G7H9J0K2L4M6N8Q0R2S4T6V8X0Z'
-        )
+        applicationServerKey: this.urlBase64ToUint8Array(publicKey)
       });
 
       // Send subscription to your server
@@ -65,10 +66,25 @@ class PushNotificationService {
     return outputArray;
   }
 
+  // Get VAPID public key from server
+  async getVapidPublicKey() {
+    try {
+      const response = await fetch('http://localhost:3001/api/vapid-public-key');
+      if (!response.ok) {
+        throw new Error('Failed to get VAPID public key');
+      }
+      const data = await response.json();
+      return data.publicKey;
+    } catch (error) {
+      console.error('Error getting VAPID public key:', error);
+      throw error;
+    }
+  }
+
   // Send subscription to server
   async sendSubscriptionToServer(subscription) {
     try {
-      const response = await fetch('/api/subscribe', {
+      const response = await fetch('http://localhost:3001/api/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +124,7 @@ class PushNotificationService {
   // Send unsubscribe to server
   async sendUnsubscribeToServer(subscription) {
     try {
-      await fetch('/api/unsubscribe', {
+      await fetch('http://localhost:3001/api/unsubscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

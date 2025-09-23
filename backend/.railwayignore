@@ -1,0 +1,17 @@
+# Ignore frontend files
+../src
+../public
+../node_modules
+../package.json
+../package-lock.json
+../README.md
+../.gitignore
+
+# Keep only backend files
+!server.js
+!package.json
+!package-lock.json
+!public/
+!*.js
+!*.json
+!*.md
