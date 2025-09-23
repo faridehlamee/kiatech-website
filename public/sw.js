@@ -82,10 +82,11 @@ self.addEventListener('activate', (event) => {
 
 // Push notification event
 self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'New update from Kiatech Software!',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-192x192.png',
+  let notificationData = {
+    title: 'Kiatech Software',
+    body: 'New update from Kiatech Software!',
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-192x192.svg',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
@@ -95,18 +96,28 @@ self.addEventListener('push', (event) => {
       {
         action: 'explore',
         title: 'Visit Website',
-        icon: '/icons/icon-192x192.png'
+        icon: '/icons/icon-192x192.svg'
       },
       {
         action: 'close',
         title: 'Close',
-        icon: '/icons/icon-192x192.png'
+        icon: '/icons/icon-192x192.svg'
       }
     ]
   };
+
+  // Parse push data if available
+  if (event.data) {
+    try {
+      const pushData = event.data.json();
+      notificationData = { ...notificationData, ...pushData };
+    } catch (e) {
+      notificationData.body = event.data.text();
+    }
+  }
   
   event.waitUntil(
-    self.registration.showNotification('Kiatech Software', options)
+    self.registration.showNotification(notificationData.title, notificationData)
   );
 });
 

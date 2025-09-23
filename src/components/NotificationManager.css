@@ -1,0 +1,213 @@
+/* Notification Manager Styles */
+.notification-toggle-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: linear-gradient(135deg, #007bff 0%, #667eea 100%);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.notification-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.notification-manager {
+  position: fixed;
+  bottom: 140px;
+  right: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  max-width: 300px;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.notification-content {
+  padding: 20px;
+  position: relative;
+}
+
+.notification-content h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.notification-content p {
+  margin: 0 0 10px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.notification-content ul {
+  margin: 0 0 15px 0;
+  padding-left: 20px;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.notification-content li {
+  margin-bottom: 5px;
+}
+
+.notification-status {
+  margin: 15px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.status {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.status.granted {
+  color: #28a745;
+}
+
+.status.denied {
+  color: #dc3545;
+}
+
+.status.default {
+  color: #6c757d;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.subscribe-btn,
+.unsubscribe-btn {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.subscribe-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+.subscribe-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.unsubscribe-btn {
+  background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+  color: white;
+}
+
+.unsubscribe-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.subscribe-btn:disabled,
+.unsubscribe-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.close-manager-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.close-manager-btn:hover {
+  background: #f8f9fa;
+  color: #333;
+}
+
+/* Toast notifications */
+.notification-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  z-index: 1002;
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification-toast.success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.notification-toast.error {
+  background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .notification-manager {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    bottom: 160px;
+  }
+  
+  .notification-toggle-btn {
+    right: 10px;
+    bottom: 70px;
+  }
+}

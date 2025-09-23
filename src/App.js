@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import PWAInstall from './components/PWAInstall';
 import OfflineNotice from './components/OfflineNotice';
+import NotificationManager from './components/NotificationManager';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -26,6 +27,7 @@ function App() {
         <Footer />
         <PWAInstall />
         <OfflineNotice />
+        <NotificationManager />
       </div>
     </Router>
   );
