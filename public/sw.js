@@ -100,9 +100,23 @@ self.addEventListener('push', (event) => {
     icon: '/icons/icon-192x192.svg',
     badge: '/icons/icon-192x192.svg',
     vibrate: [100, 50, 100],
+    requireInteraction: true, // Keep notification visible until user interacts
+    actions: [
+      {
+        action: 'explore',
+        title: 'View Details',
+        icon: '/icons/icon-192x192.svg'
+      },
+      {
+        action: 'close',
+        title: 'Close',
+        icon: '/icons/icon-192x192.svg'
+      }
+    ],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: 1
+      primaryKey: 1,
+      url: '/'
     }
   };
 
@@ -111,7 +125,14 @@ self.addEventListener('push', (event) => {
     try {
       const pushData = event.data.json();
       console.log('Push data received:', pushData);
-      notificationData = { ...notificationData, ...pushData };
+      notificationData = { 
+        ...notificationData, 
+        ...pushData,
+        data: {
+          ...notificationData.data,
+          ...pushData.data
+        }
+      };
     } catch (e) {
       console.log('Push data as text:', event.data.text());
       notificationData.body = event.data.text();
@@ -125,7 +146,10 @@ self.addEventListener('push', (event) => {
       .then(() => {
         console.log('Notification shown successfully');
         
-        // Trigger custom event for the app to handle
+        // Store notification in IndexedDB for when app opens
+        self.storeNotification(notificationData);
+        
+        // Trigger custom event for the app to handle (if app is open)
         self.clients.matchAll().then(clients => {
           clients.forEach(client => {
             client.postMessage({
@@ -133,7 +157,8 @@ self.addEventListener('push', (event) => {
               data: {
                 title: notificationData.title,
                 body: notificationData.body,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                url: notificationData.data?.url || '/'
               }
             });
           });
@@ -149,6 +174,48 @@ self.addEventListener('push', (event) => {
       })
   );
 });
+
+// Store notification in IndexedDB
+self.storeNotification = async (notificationData) => {
+  try {
+    const db = await self.openDB();
+    const transaction = db.transaction(['notifications'], 'readwrite');
+    const store = transaction.objectStore('notifications');
+    
+    const notification = {
+      id: Date.now(),
+      title: notificationData.title,
+      body: notificationData.body,
+      timestamp: new Date().toISOString(),
+      read: false,
+      url: notificationData.data?.url || '/'
+    };
+    
+    await store.add(notification);
+    console.log('Notification stored in IndexedDB');
+  } catch (error) {
+    console.error('Error storing notification:', error);
+  }
+};
+
+// Open IndexedDB
+self.openDB = () => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('KiatechNotifications', 1);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('notifications')) {
+        const store = db.createObjectStore('notifications', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+        store.createIndex('read', 'read', { unique: false });
+      }
+    };
+  });
+};
 
 // Notification click event
 self.addEventListener('notificationclick', (event) => {

@@ -25,7 +25,8 @@ const NotificationManager = () => {
           title: event.data.data.title,
           body: event.data.data.body,
           timestamp: new Date(event.data.data.timestamp),
-          read: false
+          read: false,
+          url: event.data.data.url || '/'
         };
         setNotifications(prev => [notification, ...prev]);
         setUnreadCount(prev => prev + 1);
@@ -57,29 +58,115 @@ const NotificationManager = () => {
     }
   };
 
-  const loadNotifications = () => {
-    // Load notifications from localStorage
-    const savedNotifications = localStorage.getItem('kiatech-notifications');
-    if (savedNotifications) {
-      const parsed = JSON.parse(savedNotifications);
-      setNotifications(parsed);
-      setUnreadCount(parsed.filter(n => !n.read).length);
+  const loadNotifications = async () => {
+    try {
+      // First try to load from IndexedDB (for notifications received when app was closed)
+      const db = await openIndexedDB();
+      if (db) {
+        const transaction = db.transaction(['notifications'], 'readonly');
+        const store = transaction.objectStore('notifications');
+        const request = store.getAll();
+        
+        request.onsuccess = () => {
+          const indexedNotifications = request.result || [];
+          console.log('Loaded notifications from IndexedDB:', indexedNotifications);
+          
+          // Also load from localStorage as fallback
+          const savedNotifications = localStorage.getItem('kiatech-notifications');
+          let localStorageNotifications = [];
+          if (savedNotifications) {
+            localStorageNotifications = JSON.parse(savedNotifications);
+          }
+          
+          // Merge notifications, avoiding duplicates
+          const allNotifications = [...indexedNotifications];
+          localStorageNotifications.forEach(localNotif => {
+            if (!allNotifications.find(n => n.id === localNotif.id)) {
+              allNotifications.push(localNotif);
+            }
+          });
+          
+          // Sort by timestamp (newest first)
+          allNotifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          
+          setNotifications(allNotifications);
+          setUnreadCount(allNotifications.filter(n => !n.read).length);
+          
+          // Update localStorage with merged data
+          localStorage.setItem('kiatech-notifications', JSON.stringify(allNotifications));
+        };
+      } else {
+        // Fallback to localStorage only
+        const savedNotifications = localStorage.getItem('kiatech-notifications');
+        if (savedNotifications) {
+          const parsed = JSON.parse(savedNotifications);
+          setNotifications(parsed);
+          setUnreadCount(parsed.filter(n => !n.read).length);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+      // Fallback to localStorage
+      const savedNotifications = localStorage.getItem('kiatech-notifications');
+      if (savedNotifications) {
+        const parsed = JSON.parse(savedNotifications);
+        setNotifications(parsed);
+        setUnreadCount(parsed.filter(n => !n.read).length);
+      }
     }
   };
 
-  const markAsRead = (notificationId) => {
-    setNotifications(prev => 
-      prev.map(n => 
-        n.id === notificationId ? { ...n, read: true } : n
-      )
-    );
-    setUnreadCount(prev => Math.max(0, prev - 1));
-    
-    // Save to localStorage
+  const openIndexedDB = () => {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('KiatechNotifications', 1);
+      
+      request.onerror = () => {
+        console.log('IndexedDB not available, using localStorage');
+        resolve(null);
+      };
+      request.onsuccess = () => resolve(request.result);
+      
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains('notifications')) {
+          const store = db.createObjectStore('notifications', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('timestamp', 'timestamp', { unique: false });
+          store.createIndex('read', 'read', { unique: false });
+        }
+      };
+    });
+  };
+
+  const markAsRead = async (notificationId) => {
     const updated = notifications.map(n => 
       n.id === notificationId ? { ...n, read: true } : n
     );
+    
+    setNotifications(updated);
+    setUnreadCount(updated.filter(n => !n.read).length);
+    
+    // Save to localStorage
     localStorage.setItem('kiatech-notifications', JSON.stringify(updated));
+    
+    // Update IndexedDB
+    try {
+      const db = await openIndexedDB();
+      if (db) {
+        const transaction = db.transaction(['notifications'], 'readwrite');
+        const store = transaction.objectStore('notifications');
+        const request = store.get(notificationId);
+        
+        request.onsuccess = () => {
+          const notification = request.result;
+          if (notification) {
+            notification.read = true;
+            store.put(notification);
+          }
+        };
+      }
+    } catch (error) {
+      console.error('Error updating notification in IndexedDB:', error);
+    }
     
     // Clear app badge if no unread notifications
     if (unreadCount <= 1 && 'clearAppBadge' in navigator) {
@@ -87,10 +174,31 @@ const NotificationManager = () => {
     }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  const markAllAsRead = async () => {
+    const updated = notifications.map(n => ({ ...n, read: true }));
+    setNotifications(updated);
     setUnreadCount(0);
-    localStorage.setItem('kiatech-notifications', JSON.stringify(notifications.map(n => ({ ...n, read: true }))));
+    localStorage.setItem('kiatech-notifications', JSON.stringify(updated));
+    
+    // Update IndexedDB
+    try {
+      const db = await openIndexedDB();
+      if (db) {
+        const transaction = db.transaction(['notifications'], 'readwrite');
+        const store = transaction.objectStore('notifications');
+        const request = store.getAll();
+        
+        request.onsuccess = () => {
+          const allNotifications = request.result || [];
+          allNotifications.forEach(notification => {
+            notification.read = true;
+            store.put(notification);
+          });
+        };
+      }
+    } catch (error) {
+      console.error('Error updating notifications in IndexedDB:', error);
+    }
     
     // Clear app badge
     if ('clearAppBadge' in navigator) {

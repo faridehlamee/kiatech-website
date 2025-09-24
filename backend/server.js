@@ -130,7 +130,12 @@ app.post('/api/send-notification', (req, res) => {
     body: body,
     url: url || 'https://kiatechsoftware.com',
     icon: icon || '/icons/icon-192x192.svg',
-    type: req.body.type || 'general'
+    type: req.body.type || 'general',
+    data: {
+      url: url || 'https://kiatechsoftware.com',
+      type: req.body.type || 'general',
+      timestamp: new Date().toISOString()
+    }
   });
   
   const promises = subscriptions.map(subscription => {
