@@ -100,23 +100,10 @@ self.addEventListener('push', (event) => {
     icon: '/icons/icon-192x192.svg',
     badge: '/icons/icon-192x192.svg',
     vibrate: [100, 50, 100],
-    requireInteraction: true, // Keep notification visible until user interacts
     data: {
       dateOfArrival: Date.now(),
       primaryKey: 1
-    },
-    actions: [
-      {
-        action: 'explore',
-        title: 'Visit Website',
-        icon: '/icons/icon-192x192.svg'
-      },
-      {
-        action: 'close',
-        title: 'Close',
-        icon: '/icons/icon-192x192.svg'
-      }
-    ]
+    }
   };
 
   // Parse push data if available

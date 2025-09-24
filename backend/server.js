@@ -130,21 +130,7 @@ app.post('/api/send-notification', (req, res) => {
     body: body,
     url: url || 'https://kiatechsoftware.com',
     icon: icon || '/icons/icon-192x192.svg',
-    type: req.body.type || 'general',
-    requireInteraction: true,
-    vibrate: [100, 50, 100],
-    actions: [
-      {
-        action: 'explore',
-        title: 'Visit Website',
-        icon: '/icons/icon-192x192.svg'
-      },
-      {
-        action: 'close',
-        title: 'Close',
-        icon: '/icons/icon-192x192.svg'
-      }
-    ]
+    type: req.body.type || 'general'
   });
   
   const promises = subscriptions.map(subscription => {
