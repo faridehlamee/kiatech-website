@@ -42,8 +42,18 @@ class PushNotificationService {
       console.log('VAPID public key received:', publicKey.substring(0, 20) + '...');
       
       console.log('Getting service worker registration...');
+      console.log('Service worker supported:', 'serviceWorker' in navigator);
+      console.log('Service worker state:', navigator.serviceWorker.controller ? navigator.serviceWorker.controller.state : 'no controller');
+      
+      // Force service worker update if needed
+      if (navigator.serviceWorker.controller) {
+        console.log('Forcing service worker update...');
+        navigator.serviceWorker.controller.postMessage({ action: 'SKIP_WAITING' });
+      }
+      
       const registration = await navigator.serviceWorker.ready;
-      console.log('Service worker ready');
+      console.log('Service worker ready:', registration);
+      console.log('Service worker state:', registration.active ? registration.active.state : 'no active worker');
       
       console.log('Subscribing to push manager...');
       const subscription = await registration.pushManager.subscribe({
