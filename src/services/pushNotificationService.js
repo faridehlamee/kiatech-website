@@ -45,14 +45,27 @@ class PushNotificationService {
       console.log('Service worker supported:', 'serviceWorker' in navigator);
       console.log('Service worker state:', navigator.serviceWorker.controller ? navigator.serviceWorker.controller.state : 'no controller');
       
-      // Force service worker update if needed
-      if (navigator.serviceWorker.controller) {
-        console.log('Forcing service worker update...');
-        navigator.serviceWorker.controller.postMessage({ action: 'SKIP_WAITING' });
+      // Wait for service worker to be ready with timeout
+      let registration;
+      try {
+        console.log('Waiting for service worker to be ready...');
+        registration = await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Service worker timeout')), 10000)
+          )
+        ]);
+        console.log('Service worker ready:', registration);
+      } catch (error) {
+        console.error('Service worker not ready, trying to get registration:', error);
+        // Fallback: try to get existing registration
+        registration = await navigator.serviceWorker.getRegistration();
+        if (!registration) {
+          throw new Error('No service worker registration found');
+        }
+        console.log('Using existing registration:', registration);
       }
       
-      const registration = await navigator.serviceWorker.ready;
-      console.log('Service worker ready:', registration);
       console.log('Service worker state:', registration.active ? registration.active.state : 'no active worker');
       
       console.log('Subscribing to push manager...');
