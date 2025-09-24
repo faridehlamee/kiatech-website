@@ -4,6 +4,9 @@
   bottom: 80px;
   right: 20px;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .notification-toggle-btn {

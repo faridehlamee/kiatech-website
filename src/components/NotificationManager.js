@@ -8,6 +8,7 @@ const NotificationManager = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showManager, setShowManager] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -38,7 +39,22 @@ const NotificationManager = () => {
     };
 
     navigator.serviceWorker.addEventListener('message', handleMessage);
-    return () => navigator.serviceWorker.removeEventListener('message', handleMessage);
+    
+    // Close dropdowns when clicking outside
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.notification-bell-container') && 
+          !event.target.closest('.notification-manager')) {
+        setShowNotifications(false);
+        setShowManager(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    
+    return () => {
+      navigator.serviceWorker.removeEventListener('message', handleMessage);
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, []);
 
   const checkSupport = () => {
@@ -256,8 +272,8 @@ const NotificationManager = () => {
       <div className="notification-bell-container">
         <button 
           className="notification-toggle-btn"
-          onClick={() => setShowManager(!showManager)}
-          title="Manage notifications"
+          onClick={() => setShowNotifications(!showNotifications)}
+          title="View notifications"
         >
           🔔
           {unreadCount > 0 && (
@@ -265,15 +281,58 @@ const NotificationManager = () => {
           )}
         </button>
         
-        {showManager && (
+        <button 
+          className="notification-toggle-btn"
+          onClick={() => setShowManager(!showManager)}
+          title="Notification settings"
+          style={{ 
+            marginTop: '10px',
+            background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+            fontSize: '1rem'
+          }}
+        >
+          ⚙️
+        </button>
+        
+        {showNotifications && (
           <div className="notification-dropdown">
             <div className="notification-header">
               <h3>Notifications</h3>
-              {unreadCount > 0 && (
-                <button onClick={markAllAsRead} className="mark-all-read">
-                  Mark all as read
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                {unreadCount > 0 && (
+                  <button onClick={markAllAsRead} className="mark-all-read">
+                    Mark all as read
+                  </button>
+                )}
+                <button 
+                  onClick={() => {
+                    setShowNotifications(false);
+                    setShowManager(true);
+                  }}
+                  className="mark-all-read"
+                  style={{ background: '#28a745' }}
+                >
+                  Settings
                 </button>
-              )}
+                <button 
+                  onClick={() => setShowNotifications(false)}
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    fontSize: '1.2rem', 
+                    color: '#999', 
+                    cursor: 'pointer',
+                    padding: '0',
+                    width: '20px',
+                    height: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  ×
+                </button>
+              </div>
             </div>
             
             <div className="notification-list">
