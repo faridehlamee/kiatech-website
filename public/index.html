@@ -98,14 +98,19 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
+          console.log('Attempting to register service worker...');
           navigator.serviceWorker.register('/sw.js')
             .then((registration) => {
-              console.log('SW registered: ', registration);
+              console.log('SW registered successfully: ', registration);
+              console.log('SW scope: ', registration.scope);
+              console.log('SW state: ', registration.active ? registration.active.state : 'no active worker');
             })
             .catch((registrationError) => {
-              console.log('SW registration failed: ', registrationError);
+              console.error('SW registration failed: ', registrationError);
             });
         });
+      } else {
+        console.log('Service Worker not supported');
       }
     </script>
   </body>
