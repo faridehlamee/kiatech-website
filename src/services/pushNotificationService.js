@@ -61,7 +61,17 @@ class PushNotificationService {
         // Fallback: try to get existing registration
         registration = await navigator.serviceWorker.getRegistration();
         if (!registration) {
-          throw new Error('No service worker registration found');
+          console.error('No service worker registration found, trying to register...');
+          // Try to register the service worker manually
+          try {
+            registration = await navigator.serviceWorker.register('/sw.js');
+            console.log('Service worker registered manually:', registration);
+            // Wait a bit for it to activate
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          } catch (regError) {
+            console.error('Failed to register service worker:', regError);
+            throw new Error('No service worker registration found and failed to register');
+          }
         }
         console.log('Using existing registration:', registration);
       }
