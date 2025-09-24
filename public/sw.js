@@ -154,22 +154,35 @@ self.addEventListener('notificationclick', (event) => {
   // Determine where to navigate based on notification data
   let targetUrl = '/';
   
+  console.log('Notification data:', notificationData);
+  console.log('Action:', action);
+  
   if (action === 'explore' || !action) {
     // Smart routing based on notification type
     if (notificationData.type === 'service') {
       targetUrl = '/services';
+      console.log('Routing to services page');
     } else if (notificationData.type === 'portfolio') {
       targetUrl = '/portfolio';
+      console.log('Routing to portfolio page');
     } else if (notificationData.type === 'contact') {
       targetUrl = '/contact';
+      console.log('Routing to contact page');
     } else if (notificationData.type === 'pricing') {
       targetUrl = '/pricing';
+      console.log('Routing to pricing page');
     } else if (notificationData.url) {
       targetUrl = notificationData.url;
+      console.log('Routing to custom URL:', targetUrl);
+    } else {
+      console.log('No specific type, routing to homepage');
     }
   } else if (action === 'close') {
+    console.log('User clicked close, not navigating');
     return; // Just close, don't navigate
   }
+  
+  console.log('Final target URL:', targetUrl);
   
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
