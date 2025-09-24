@@ -69,7 +69,7 @@ class PushNotificationService {
   // Get VAPID public key from server
   async getVapidPublicKey() {
     try {
-      const response = await fetch('http://localhost:3001/api/vapid-public-key');
+      const response = await fetch('https://kiatech-website-production.up.railway.app/api/vapid-public-key');
       if (!response.ok) {
         throw new Error('Failed to get VAPID public key');
       }
@@ -84,7 +84,7 @@ class PushNotificationService {
   // Send subscription to server
   async sendSubscriptionToServer(subscription) {
     try {
-      const response = await fetch('http://localhost:3001/api/subscribe', {
+      const response = await fetch('https://kiatech-website-production.up.railway.app/api/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ class PushNotificationService {
   // Send unsubscribe to server
   async sendUnsubscribeToServer(subscription) {
     try {
-      await fetch('http://localhost:3001/api/unsubscribe', {
+      await fetch('https://kiatech-website-production.up.railway.app/api/unsubscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
