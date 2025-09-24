@@ -135,9 +135,43 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   
-  if (event.action === 'explore') {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
+  const notificationData = event.notification.data || {};
+  const action = event.action;
+  
+  // Determine where to navigate based on notification data
+  let targetUrl = '/';
+  
+  if (action === 'explore' || !action) {
+    // Smart routing based on notification type
+    if (notificationData.type === 'service') {
+      targetUrl = '/services';
+    } else if (notificationData.type === 'portfolio') {
+      targetUrl = '/portfolio';
+    } else if (notificationData.type === 'contact') {
+      targetUrl = '/contact';
+    } else if (notificationData.type === 'pricing') {
+      targetUrl = '/pricing';
+    } else if (notificationData.url) {
+      targetUrl = notificationData.url;
+    }
+  } else if (action === 'close') {
+    return; // Just close, don't navigate
   }
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Check if app is already open
+        for (const client of clientList) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            // App is open, focus it and navigate
+            return client.focus().then(() => {
+              return client.navigate(targetUrl);
+            });
+          }
+        }
+        // App is not open, open new window
+        return clients.openWindow(targetUrl);
+      })
+  );
 });

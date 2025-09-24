@@ -228,7 +228,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="url">Action URL (optional)</label>
+                    <label for="type">Notification Type</label>
+                    <select id="type" name="type">
+                        <option value="general">General Announcement</option>
+                        <option value="service">New Service</option>
+                        <option value="portfolio">Portfolio Update</option>
+                        <option value="contact">Contact Reminder</option>
+                        <option value="pricing">Pricing Update</option>
+                        <option value="custom">Custom URL</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="url-group" style="display: none;">
+                    <label for="url">Custom URL (optional)</label>
                     <input type="url" id="url" name="url" 
                            placeholder="https://kiatechsoftware.com/services">
                 </div>
@@ -285,6 +297,16 @@
             }
         }
 
+        // Handle notification type selection
+        document.getElementById('type').addEventListener('change', (e) => {
+            const urlGroup = document.getElementById('url-group');
+            if (e.target.value === 'custom') {
+                urlGroup.style.display = 'block';
+            } else {
+                urlGroup.style.display = 'none';
+            }
+        });
+
         // Handle form submission
         document.getElementById('notification-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -293,6 +315,7 @@
             const notificationData = {
                 title: formData.get('title'),
                 body: formData.get('body'),
+                type: formData.get('type'),
                 url: formData.get('url') || undefined,
                 icon: formData.get('icon') || undefined
             };
