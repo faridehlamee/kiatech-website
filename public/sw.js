@@ -2,16 +2,10 @@
 const CACHE_NAME = 'kiatech-software-v1.0.0';
 const urlsToCache = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
   '/manifest.json',
-  // Add your main pages
-  '/home',
-  '/about',
-  '/services',
-  '/portfolio',
-  '/pricing',
-  '/contact'
+  '/sw.js',
+  '/icons/icon-192x192.svg',
+  '/icons/icon-512x512.svg'
 ];
 
 // Install event - cache resources
@@ -21,7 +15,14 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        // Cache resources one by one to avoid addAll errors
+        return Promise.all(
+          urlsToCache.map(url => 
+            cache.add(url).catch(err => 
+              console.log('Failed to cache:', url, err)
+            )
+          )
+        );
       })
       .then(() => {
         console.log('Service worker installed, skipping waiting...');
