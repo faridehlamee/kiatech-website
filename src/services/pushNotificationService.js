@@ -22,27 +22,40 @@ class PushNotificationService {
 
   // Subscribe to push notifications
   async subscribe() {
+    console.log('Starting subscription process...');
+    
     if (!this.isSupported) {
       throw new Error('Push notifications are not supported');
     }
 
+    console.log('Requesting permission...');
     const permission = await this.requestPermission();
     if (!permission) {
       throw new Error('Notification permission denied');
     }
+    console.log('Permission granted:', permission);
 
     try {
+      console.log('Getting VAPID public key from server...');
       // Get VAPID public key from server
       const publicKey = await this.getVapidPublicKey();
+      console.log('VAPID public key received:', publicKey.substring(0, 20) + '...');
       
+      console.log('Getting service worker registration...');
       const registration = await navigator.serviceWorker.ready;
+      console.log('Service worker ready');
+      
+      console.log('Subscribing to push manager...');
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: this.urlBase64ToUint8Array(publicKey)
       });
+      console.log('Push subscription created:', subscription);
 
+      console.log('Sending subscription to server...');
       // Send subscription to your server
       await this.sendSubscriptionToServer(subscription);
+      console.log('Subscription sent to server successfully');
       return subscription;
     } catch (error) {
       console.error('Error subscribing to push notifications:', error);
