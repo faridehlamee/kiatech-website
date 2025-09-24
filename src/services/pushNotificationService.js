@@ -65,18 +65,25 @@ class PushNotificationService {
 
   // Convert VAPID key
   urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-      .replace(/-/g, '+')
-      .replace(/_/g, '/');
+    console.log('Converting VAPID key:', base64String);
+    try {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
 
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
 
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      console.log('VAPID key converted successfully, length:', outputArray.length);
+      return outputArray;
+    } catch (error) {
+      console.error('Error converting VAPID key:', error);
+      throw error;
     }
-    return outputArray;
   }
 
   // Get VAPID public key from server
