@@ -124,6 +124,25 @@ self.addEventListener('push', (event) => {
     self.registration.showNotification(notificationData.title, notificationData)
       .then(() => {
         console.log('Notification shown successfully');
+        
+        // Trigger custom event for the app to handle
+        self.clients.matchAll().then(clients => {
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'NOTIFICATION_RECEIVED',
+              data: {
+                title: notificationData.title,
+                body: notificationData.body,
+                timestamp: new Date().toISOString()
+              }
+            });
+          });
+        });
+        
+        // Set app badge
+        if ('setAppBadge' in navigator) {
+          navigator.setAppBadge().catch(console.error);
+        }
       })
       .catch((error) => {
         console.error('Error showing notification:', error);
