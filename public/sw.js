@@ -92,12 +92,15 @@ self.addEventListener('activate', (event) => {
 
 // Push notification event
 self.addEventListener('push', (event) => {
+  console.log('Push event received:', event);
+  
   let notificationData = {
     title: 'Kiatech Software',
     body: 'New update from Kiatech Software!',
     icon: '/icons/icon-192x192.svg',
     badge: '/icons/icon-192x192.svg',
     vibrate: [100, 50, 100],
+    requireInteraction: true, // Keep notification visible until user interacts
     data: {
       dateOfArrival: Date.now(),
       primaryKey: 1
@@ -120,14 +123,24 @@ self.addEventListener('push', (event) => {
   if (event.data) {
     try {
       const pushData = event.data.json();
+      console.log('Push data received:', pushData);
       notificationData = { ...notificationData, ...pushData };
     } catch (e) {
+      console.log('Push data as text:', event.data.text());
       notificationData.body = event.data.text();
     }
   }
   
+  console.log('Showing notification:', notificationData);
+  
   event.waitUntil(
     self.registration.showNotification(notificationData.title, notificationData)
+      .then(() => {
+        console.log('Notification shown successfully');
+      })
+      .catch((error) => {
+        console.error('Error showing notification:', error);
+      })
   );
 });
 
