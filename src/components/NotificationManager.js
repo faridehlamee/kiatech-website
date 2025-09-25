@@ -29,12 +29,32 @@ const NotificationManager = () => {
           read: false,
           url: event.data.data.url || '/'
         };
-        setNotifications(prev => [notification, ...prev]);
-        setUnreadCount(prev => prev + 1);
         
-        // Save to localStorage
-        const updated = [notification, ...notifications];
-        localStorage.setItem('kiatech-notifications', JSON.stringify(updated));
+        setNotifications(prev => {
+          // Check if notification already exists (avoid duplicates)
+          const exists = prev.find(n => 
+            n.title === notification.title && 
+            n.body === notification.body && 
+            Math.abs(new Date(n.timestamp) - new Date(notification.timestamp)) < 1000
+          );
+          
+          if (exists) {
+            console.log('Notification already exists, not adding duplicate');
+            return prev;
+          }
+          
+          const updated = [notification, ...prev];
+          // Save to localStorage
+          localStorage.setItem('kiatech-notifications', JSON.stringify(updated));
+          return updated;
+        });
+        
+        // Update unread count based on actual notifications
+        setNotifications(prev => {
+          const unreadCount = prev.filter(n => !n.read).length;
+          setUnreadCount(unreadCount);
+          return prev;
+        });
       }
     };
 
@@ -74,6 +94,19 @@ const NotificationManager = () => {
     }
   };
 
+  const cleanupOldNotifications = (notifications) => {
+    // Keep only the last 50 notifications and remove very old ones (older than 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const cleaned = notifications
+      .filter(n => new Date(n.timestamp) > thirtyDaysAgo)
+      .slice(0, 50)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    return cleaned;
+  };
+
   const loadNotifications = async () => {
     try {
       // First try to load from IndexedDB (for notifications received when app was closed)
@@ -94,7 +127,7 @@ const NotificationManager = () => {
             localStorageNotifications = JSON.parse(savedNotifications);
           }
           
-          // Merge notifications, avoiding duplicates
+          // Merge notifications, avoiding duplicates by ID
           const allNotifications = [...indexedNotifications];
           localStorageNotifications.forEach(localNotif => {
             if (!allNotifications.find(n => n.id === localNotif.id)) {
@@ -102,14 +135,20 @@ const NotificationManager = () => {
             }
           });
           
-          // Sort by timestamp (newest first)
-          allNotifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          // Clean up old notifications
+          const cleanedNotifications = cleanupOldNotifications(allNotifications);
           
-          setNotifications(allNotifications);
-          setUnreadCount(allNotifications.filter(n => !n.read).length);
+          // Calculate unread count properly
+          const unreadCount = cleanedNotifications.filter(n => !n.read).length;
           
-          // Update localStorage with merged data
-          localStorage.setItem('kiatech-notifications', JSON.stringify(allNotifications));
+          setNotifications(cleanedNotifications);
+          setUnreadCount(unreadCount);
+          
+          // Update localStorage with cleaned data
+          localStorage.setItem('kiatech-notifications', JSON.stringify(cleanedNotifications));
+          
+          console.log('Total notifications:', allNotifications.length);
+          console.log('Unread notifications:', unreadCount);
         };
       } else {
         // Fallback to localStorage only
@@ -186,6 +225,29 @@ const NotificationManager = () => {
     
     // Clear app badge if no unread notifications
     if (unreadCount <= 1 && 'clearAppBadge' in navigator) {
+      navigator.clearAppBadge().catch(console.error);
+    }
+  };
+
+  const clearAllNotifications = async () => {
+    setNotifications([]);
+    setUnreadCount(0);
+    localStorage.removeItem('kiatech-notifications');
+    
+    // Clear IndexedDB
+    try {
+      const db = await openIndexedDB();
+      if (db) {
+        const transaction = db.transaction(['notifications'], 'readwrite');
+        const store = transaction.objectStore('notifications');
+        store.clear();
+      }
+    } catch (error) {
+      console.error('Error clearing notifications from IndexedDB:', error);
+    }
+    
+    // Clear app badge
+    if ('clearAppBadge' in navigator) {
       navigator.clearAppBadge().catch(console.error);
     }
   };
@@ -313,6 +375,16 @@ const NotificationManager = () => {
                   style={{ background: '#28a745' }}
                 >
                   Settings
+                </button>
+                <button 
+                  onClick={() => {
+                    clearAllNotifications();
+                    setShowNotifications(false);
+                  }}
+                  className="mark-all-read"
+                  style={{ background: '#dc3545' }}
+                >
+                  Clear All
                 </button>
                 <button 
                   onClick={() => setShowNotifications(false)}
