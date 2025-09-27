@@ -357,105 +357,168 @@ const NotificationManager = () => {
         </button>
         
         {showNotifications && (
-          <div className="notification-dropdown">
-            <div className="notification-header">
-              <h3>Notifications</h3>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                {unreadCount > 0 && (
-                  <button onClick={markAllAsRead} className="mark-all-read">
-                    Mark all as read
-                  </button>
-                )}
-                <button 
-                  onClick={() => {
-                    setShowNotifications(false);
-                    setShowManager(true);
-                  }}
-                  className="mark-all-read"
-                  style={{ background: '#28a745' }}
-                >
-                  Settings
-                </button>
-                <button 
-                  onClick={() => {
-                    clearAllNotifications();
-                    setShowNotifications(false);
-                  }}
-                  className="mark-all-read"
-                  style={{ background: '#dc3545' }}
-                >
-                  Clear All
-                </button>
-                <button 
-                  onClick={() => setShowNotifications(false)}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    fontSize: '1.2rem', 
-                    color: '#999', 
-                    cursor: 'pointer',
-                    padding: '0',
-                    width: '20px',
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-            
-            <div className="notification-list">
-              {notifications.length === 0 ? (
-                <div className="no-notifications">No notifications yet</div>
-              ) : (
-                notifications.map(notification => (
-                  <div 
-                    key={notification.id} 
-                    className={`notification-item ${!notification.read ? 'unread' : ''}`}
-                    onClick={() => markAsRead(notification.id)}
+          <div className="notification-dropdown" onClick={(e) => e.stopPropagation()}>
+            <div className="notification-panel">
+              <div className="notification-header">
+                <h3>🔔 Notifications</h3>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  {unreadCount > 0 && (
+                    <button onClick={markAllAsRead} className="mark-all-read">
+                      Mark all read
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => {
+                      setShowNotifications(false);
+                      setShowManager(true);
+                    }}
+                    className="mark-all-read"
+                    style={{ background: '#28a745' }}
                   >
-                    <div className="notification-content">
-                      <h4>{notification.title}</h4>
-                      <p>{notification.body}</p>
-                      <span className="notification-time">
-                        {notification.timestamp.toLocaleTimeString()}
-                      </span>
+                    ⚙️ Settings
+                  </button>
+                  <button 
+                    onClick={() => {
+                      clearAllNotifications();
+                      setShowNotifications(false);
+                    }}
+                    className="mark-all-read"
+                    style={{ background: '#dc3545' }}
+                  >
+                    🗑️ Clear All
+                  </button>
+                  <button 
+                    onClick={() => setShowNotifications(false)}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      fontSize: '1.5rem', 
+                      color: '#999', 
+                      cursor: 'pointer',
+                      padding: '0',
+                      width: '30px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '50%',
+                      transition: 'background-color 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              
+              <div className="notification-list">
+                {notifications.length === 0 ? (
+                  <div className="no-notifications">
+                    <div style={{ fontSize: '3rem', marginBottom: '10px' }}>🔔</div>
+                    <div>No notifications yet</div>
+                    <div style={{ fontSize: '0.9rem', color: '#666', marginTop: '5px' }}>
+                      We'll notify you when there's something new!
                     </div>
-                    {!notification.read && <div className="unread-dot"></div>}
                   </div>
-                ))
-              )}
+                ) : (
+                  notifications.map(notification => (
+                    <div 
+                      key={notification.id} 
+                      className={`notification-item ${!notification.read ? 'unread' : ''}`}
+                      onClick={() => markAsRead(notification.id)}
+                    >
+                      <div className="notification-content">
+                        <h4>{notification.title}</h4>
+                        <p>{notification.body}</p>
+                        <span className="notification-time">
+                          {new Date(notification.timestamp).toLocaleString()}
+                        </span>
+                      </div>
+                      {!notification.read && <div className="unread-dot"></div>}
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         )}
       </div>
 
       {showManager && (
-        <div className="notification-manager">
+        <div className="notification-manager" onClick={(e) => e.stopPropagation()}>
           <div className="notification-content">
-            <h4>📱 Push Notifications</h4>
-            <p>Get notified about:</p>
-            <ul>
-              <li>✨ New service updates</li>
-              <li>🎯 Special offers</li>
-              <li>📞 Important announcements</li>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h4>📱 Push Notifications</h4>
+              <button 
+                onClick={() => setShowManager(false)}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  fontSize: '1.5rem', 
+                  color: '#999', 
+                  cursor: 'pointer',
+                  padding: '0',
+                  width: '30px',
+                  height: '30px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+              >
+                ×
+              </button>
+            </div>
+            
+            <p style={{ marginBottom: '15px', color: '#666' }}>Get notified about:</p>
+            <ul style={{ marginBottom: '20px', paddingLeft: '20px' }}>
+              <li style={{ marginBottom: '8px', color: '#555' }}>✨ New service updates</li>
+              <li style={{ marginBottom: '8px', color: '#555' }}>🎯 Special offers</li>
+              <li style={{ marginBottom: '8px', color: '#555' }}>📞 Important announcements</li>
             </ul>
 
-            <div className="notification-status">
-              <span className={`status ${permission}`}>
+            <div className="notification-status" style={{ 
+              background: '#f8f9fa', 
+              padding: '15px', 
+              borderRadius: '10px', 
+              marginBottom: '20px',
+              textAlign: 'center'
+            }}>
+              <span className={`status ${permission}`} style={{ 
+                fontSize: '1rem',
+                fontWeight: '500',
+                color: permission === 'granted' ? '#28a745' : '#dc3545'
+              }}>
                 Status: {permission === 'granted' ? '✅ Enabled' : '❌ Disabled'}
               </span>
             </div>
 
-            <div className="notification-actions">
+            <div className="notification-actions" style={{ textAlign: 'center' }}>
               {!isSubscribed ? (
                 <button 
                   className="subscribe-btn"
                   onClick={handleSubscribe}
                   disabled={isLoading}
+                  style={{
+                    background: 'linear-gradient(135deg, #007bff 0%, #667eea 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '25px',
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 15px rgba(0, 123, 255, 0.3)',
+                    width: '100%',
+                    maxWidth: '250px'
+                  }}
+                  onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                  onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                 >
                   {isLoading ? '⏳ Enabling...' : '🔔 Enable Notifications'}
                 </button>
@@ -464,18 +527,27 @@ const NotificationManager = () => {
                   className="unsubscribe-btn"
                   onClick={handleUnsubscribe}
                   disabled={isLoading}
+                  style={{
+                    background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '25px',
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 15px rgba(220, 53, 69, 0.3)',
+                    width: '100%',
+                    maxWidth: '250px'
+                  }}
+                  onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                  onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                 >
                   {isLoading ? '⏳ Disabling...' : '🔕 Disable Notifications'}
                 </button>
               )}
             </div>
-
-            <button 
-              className="close-manager-btn"
-              onClick={() => setShowManager(false)}
-            >
-              ×
-            </button>
           </div>
         </div>
       )}
